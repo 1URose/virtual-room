@@ -1,0 +1,1063 @@
+definitions:
+  entity.Event:
+    properties:
+      description:
+        type: string
+      end_time:
+        type: string
+      event_name:
+        type: string
+      id:
+        type: integer
+      organizer_id:
+        type: integer
+      start_time:
+        type: string
+      virtual_room_id:
+        type: integer
+    type: object
+  entity.TicketType:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-varnames:
+    - TicketTypeFree
+    - TicketTypePaid
+  entity.UserRole:
+    enum:
+    - 0
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - Admin
+    - Organizer
+    - Participant
+  equipment_dto.CreateEquipment:
+    properties:
+      name:
+        type: string
+      user_login:
+        type: string
+    type: object
+  event_dto.CreateEvent:
+    properties:
+      description:
+        type: string
+      end_date:
+        type: string
+      organizer_login:
+        type: string
+      start_date:
+        type: string
+      title:
+        type: string
+      virtual_room_name:
+        type: string
+    type: object
+  event_participiant_dto.BecomeParticipantDto:
+    properties:
+      event:
+        $ref: '#/definitions/entity.Event'
+      user_id:
+        type: integer
+    type: object
+  event_participiant_dto.LeaveEventDto:
+    properties:
+      event:
+        $ref: '#/definitions/entity.Event'
+      user_id:
+        type: integer
+    type: object
+  sponsor_dto.CreateSponsor:
+    properties:
+      contact_info:
+        type: string
+      contribution_amount:
+        type: number
+      event_name:
+        type: string
+      name:
+        type: string
+    type: object
+  ticket_dto.CreateTicket:
+    properties:
+      event_name:
+        type: string
+      login:
+        type: string
+      price:
+        type: number
+      ticket_type:
+        $ref: '#/definitions/entity.TicketType'
+    type: object
+  user_dto.Auth:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  user_dto.SignUp:
+    properties:
+      login:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      user_role:
+        $ref: '#/definitions/entity.UserRole'
+    type: object
+  virtual_room_dto.CreateVirtualRoom:
+    properties:
+      capacity:
+        type: integer
+      room_name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /equipments/{name}:
+    get:
+      description: Fetches the user who is associated with the specified equipment
+        name
+      parameters:
+      - description: Equipment name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get user by equipment name
+      tags:
+      - equipment
+  /equipments/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new equipment entry with the provided details
+      parameters:
+      - description: Equipment details
+        in: body
+        name: equipment
+        required: true
+        schema:
+          $ref: '#/definitions/equipment_dto.CreateEquipment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new equipment item
+      tags:
+      - equipment
+  /eventParticipants:
+    delete:
+      consumes:
+      - application/json
+      description: Allows a user to leave a specific event they are participating
+        in
+      parameters:
+      - description: Event leave details
+        in: body
+        name: leaveEvent
+        required: true
+        schema:
+          $ref: '#/definitions/event_participiant_dto.LeaveEventDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User leaves an event
+      tags:
+      - event_participants
+    post:
+      consumes:
+      - application/json
+      description: Allows a user to join a specific event by becoming its participant
+      parameters:
+      - description: Event participant details
+        in: body
+        name: participant
+        required: true
+        schema:
+          $ref: '#/definitions/event_participiant_dto.BecomeParticipantDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User becomes a participant in an event
+      tags:
+      - event_participants
+  /eventParticipants/getAllEventsByParticipant:
+    get:
+      description: Fetches all events for a user identified by their participant ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all events by participant ID
+      tags:
+      - event_participants
+  /eventParticipants/getAllParticipantsByEvent:
+    post:
+      consumes:
+      - application/json
+      description: Fetches a list of users participating in a specified event
+      parameters:
+      - description: Event details
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Event'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all participants of an event
+      tags:
+      - event_participants
+  /events/{name}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes an event by its name
+      parameters:
+      - description: Event name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete an event
+      tags:
+      - events
+    get:
+      consumes:
+      - application/json
+      description: Fetches event details by its name
+      parameters:
+      - description: Event name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get an event by name
+      tags:
+      - events
+    put:
+      consumes:
+      - application/json
+      description: Updates details of an existing event
+      parameters:
+      - description: Event name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Event update details
+        in: body
+        name: event
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update an event
+      tags:
+      - events
+  /events/all:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a list of all events
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all events
+      tags:
+      - events
+  /events/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new event with the provided details
+      parameters:
+      - description: Event details
+        in: body
+        name: event
+        required: true
+        schema:
+          $ref: '#/definitions/event_dto.CreateEvent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create an event
+      tags:
+      - events
+  /sponsors/{name}:
+    get:
+      description: Fetches the sponsor details by name
+      parameters:
+      - description: Sponsor name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get sponsor by name
+      tags:
+      - sponsors
+    put:
+      consumes:
+      - application/json
+      description: Updates the sponsor information such as name, contact, and event
+        association
+      parameters:
+      - description: Sponsor name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Sponsor updates
+        in: body
+        name: sponsor
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update a sponsor
+      tags:
+      - sponsors
+  /sponsors/{sponsorName}:
+    delete:
+      description: Deletes the sponsor specified by the name
+      parameters:
+      - description: Sponsor name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete a sponsor
+      tags:
+      - sponsors
+  /sponsors/all:
+    get:
+      description: Fetches a list of all sponsors
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all sponsors
+      tags:
+      - sponsors
+  /sponsors/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new sponsor with the provided details
+      parameters:
+      - description: Sponsor details
+        in: body
+        name: sponsor
+        required: true
+        schema:
+          $ref: '#/definitions/sponsor_dto.CreateSponsor'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a sponsor
+      tags:
+      - sponsors
+  /tickets/{login}/{event_name}:
+    delete:
+      description: Удаляет билет по логину пользователя и названию события
+      parameters:
+      - description: Логин пользователя
+        in: path
+        name: userLogin
+        required: true
+        type: string
+      - description: Название события
+        in: path
+        name: eventName
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Успешное удаление
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Удалить билет
+      tags:
+      - Tickets
+    get:
+      description: Возвращает билет по логину пользователя и названию события
+      parameters:
+      - description: Логин пользователя
+        in: path
+        name: userLogin
+        required: true
+        type: string
+      - description: Название события
+        in: path
+        name: eventName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о билете
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Получить билет
+      tags:
+      - Tickets
+    put:
+      consumes:
+      - application/json
+      description: Обновляет данные билета
+      parameters:
+      - description: Логин пользователя
+        in: path
+        name: userLogin
+        required: true
+        type: string
+      - description: Название события
+        in: path
+        name: eventName
+        required: true
+        type: string
+      - description: Обновляемые данные
+        in: body
+        name: updatedTicket
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка валидации
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Обновить билет
+      tags:
+      - Tickets
+  /tickets/all:
+    get:
+      description: Возвращает все билеты
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список билетов
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Список билетов
+      tags:
+      - Tickets
+  /tickets/create:
+    post:
+      consumes:
+      - application/json
+      description: Создаёт новый билет для события
+      parameters:
+      - description: Данные билета
+        in: body
+        name: ticket
+        required: true
+        schema:
+          $ref: '#/definitions/ticket_dto.CreateTicket'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное создание билета
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка валидации
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Создать билет
+      tags:
+      - Tickets
+  /users/{login}:
+    delete:
+      description: Удаляет пользователя по его логину
+      parameters:
+      - description: Логин пользователя
+        in: path
+        name: login
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Успешное удаление
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Удалить пользователя
+      tags:
+      - Users
+    get:
+      description: Возвращает данные пользователя по его логину
+      parameters:
+      - description: Логин пользователя
+        in: path
+        name: login
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о пользователе
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Получить пользователя
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Обновляет данные пользователя по его логину
+      parameters:
+      - description: Логин пользователя
+        in: path
+        name: login
+        required: true
+        type: string
+      - description: Обновляемые данные
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешное обновление
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка валидации
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Обновить пользователя
+      tags:
+      - Users
+  /users/all:
+    get:
+      description: Возвращает список всех зарегистрированных пользователей
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список пользователей
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Список пользователей
+      tags:
+      - Users
+  /users/auth:
+    post:
+      consumes:
+      - application/json
+      description: Проверяет учетные данные пользователя и возвращает токен
+      parameters:
+      - description: Учетные данные пользователя
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/user_dto.Auth'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Токен аутентификации
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка валидации
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Пользователь не найден
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Аутентификация пользователя
+      tags:
+      - Users
+  /users/signUp:
+    post:
+      consumes:
+      - application/json
+      description: Регистрирует нового пользователя в системе
+      parameters:
+      - description: Данные пользователя
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user_dto.SignUp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Успешная регистрация
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка валидации
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Регистрация пользователя
+      tags:
+      - Users
+  /virtualRooms/{name}:
+    delete:
+      description: Удаляет виртуальную комнату по названию
+      parameters:
+      - description: Название комнаты
+        in: path
+        name: name
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Название удалённой комнаты
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Удалить виртуальную комнату
+      tags:
+      - VirtualRooms
+    get:
+      description: Возвращает данные виртуальной комнаты по её названию
+      parameters:
+      - description: Название комнаты
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о комнате
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Получить виртуальную комнату
+      tags:
+      - VirtualRooms
+  /virtualRooms/all:
+    get:
+      description: Возвращает список всех виртуальных комнат
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Список виртуальных комнат
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Список виртуальных комнат
+      tags:
+      - VirtualRooms
+  /virtualRooms/create:
+    post:
+      consumes:
+      - application/json
+      description: Добавляет новую виртуальную комнату в систему
+      parameters:
+      - description: Данные комнаты
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/virtual_room_dto.CreateVirtualRoom'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Название комнаты
+          schema:
+            type: string
+        "400":
+          description: Ошибка валидации
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Создать виртуальную комнату
+      tags:
+      - VirtualRooms
+  /virtualRooms/update/{name}:
+    put:
+      consumes:
+      - application/json
+      description: Обновляет данные виртуальной комнаты по названию
+      parameters:
+      - description: Название комнаты
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: Обновляемые данные
+        in: body
+        name: data
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Обновлённые данные комнаты
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Ошибка валидации
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Обновить виртуальную комнату
+      tags:
+      - VirtualRooms
+swagger: "2.0"

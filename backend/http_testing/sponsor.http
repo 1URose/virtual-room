@@ -1,0 +1,34 @@
+### POST request to create a new sponsor
+POST http://localhost:8080/sponsors/create
+Content-Type: application/json
+
+{
+  "name": "TechCorp",
+  "contact_info": "contact@techcorp.com",
+  "contribution_amount": 5000.00,
+  "event_name": "Tech Conference 2024"
+}
+
+###
+### GET request to retrieve a sponsor by name
+GET http://localhost:8080/sponsors/TechCorp
+
+###
+### GET request to retrieve all sponsors
+GET http://localhost:8080/sponsors/all
+
+###
+### PUT request to update a sponsor
+PUT http://localhost:8080/sponsors/TechCorp
+Content-Type: application/json
+
+{
+  "new_name": "TechCorp International",
+  "new_contact_info": "contact@techcorpintl.com",
+  "new_contribution": 7500.00,
+  "new_event_name": "Tech Conference 2024"
+}
+
+###
+### DELETE request to delete a sponsor by name
+DELETE http://localhost:8080/sponsors/TechCorp%20International

@@ -1,0 +1,44 @@
+### POST request to authenticate user
+POST http://localhost:8080/users/auth
+Content-Type: application/json
+
+{
+  "login": "organizer12315@example.com",
+  "password": "securepasswordh0"
+}
+
+###
+### POST request to register a new user
+POST http://localhost:8080/users/signUp
+Content-Type: application/json
+
+{
+  "name": "Yacko1231232",
+  "login": "organizer12315@example.com",
+  "password": "securepasswordh0",
+  "user_role": 1
+}
+
+###
+### GET request to fetch all users
+GET http://localhost:8080/users/all
+
+###
+### GET request to fetch a user by login
+GET http://localhost:8080/users/joh229@example.com
+
+###
+### DELETE request to delete a user by login
+DELETE http://localhost:8080/users/joh229@example.com
+
+###
+### PUT request to update a user
+PUT http://localhost:8080/users/johndoe2329@example.com
+Content-Type: application/json
+
+{
+  "name": "John Doe Updated",
+  "role": 2
+}
+
+###

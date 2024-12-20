@@ -1,0 +1,38 @@
+### POST request to create a new event
+POST http://localhost:8080/events/create
+Content-Type: application/json
+
+{
+  "title": "Concert2024",
+  "description": "A conference about the latest in technology.",
+  "organizer_login": "organizer123@example.com",
+  "start_time": "2024-12-20T09:00:00Z",
+  "end_time": "2024-12-20T17:00:00Z",
+  "virtual_room_name": "ConferenceRoom1"
+}
+
+###
+### GET request to retrieve an event by name
+GET http://localhost:8080/events/Tech%20Conference%202024
+
+###
+### GET request to retrieve all events
+GET http://localhost:8080/events/all
+
+###
+### PUT request to update an event
+PUT http://localhost:8080/events/Tech%20Conference%202024
+Content-Type: application/json
+
+{
+  "new_name": "Updated Tech Conference",
+  "new_description": "An updated description of the tech conference.",
+  "new_organizer_login": "updated_organizer@example.com",
+  "new_start_time": "21-12-2024T10:00:00Z",
+  "new_end_time": "23-12-2024T10:00:00Z",
+  "new_virtual_room_name": "UpdatedRoom"
+}
+
+###
+### DELETE request to delete an event by name
+DELETE http://localhost:8080/events/Updated%20Tech%20Conference

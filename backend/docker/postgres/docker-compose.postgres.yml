@@ -1,0 +1,22 @@
+﻿services:
+  postgres-db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: db-user
+      POSTGRES_PASSWORD: db-password
+      POSTGRES_DB: base-db
+    healthcheck:
+      test: /usr/bin/pg_isready
+      interval: 5s
+      timeout: 10s
+      retries: 120
+    ports:
+      - '5432:5432'
+      - '6432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - shared
+
+volumes:
+  postgres-data:

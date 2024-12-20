@@ -1,0 +1,32 @@
+### POST request to create a new virtual room
+POST http://localhost:8080/virtualRooms/create
+Content-Type: application/json
+
+{
+  "room_name": "ConferenceRoom1",
+  "capacity": 10
+}
+
+###
+### GET request to fetch details of a virtual room by name
+GET http://localhost:8080/virtualRooms/MeetingRoom1
+
+###
+### GET request to fetch all virtual rooms
+GET http://localhost:8080/virtualRooms/all
+
+###
+### DELETE request to delete a virtual room by name
+DELETE http://localhost:8080/virtualRooms/MeetingRoom1
+
+###
+### PUT request to update a virtual room
+PUT http://localhost:8080/virtualRooms/update/MeetingRoom1
+Content-Type: application/json
+
+{
+  "room_name": "UpdatedMeetingRoom",
+  "capacity": 15
+}
+
+###

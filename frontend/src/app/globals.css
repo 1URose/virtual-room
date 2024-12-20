@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Тёмно-сине-фиолетовая цветовая палитра (пример) */
+    --background: 228 25% 13%;        /* Тёмный фон */
+    --foreground: 210 15% 90%;       /* Светлый текст */
+
+    --muted: 228 20% 20%;            /* Приглушённый фон */
+    --muted-foreground: 210 20% 80%; /* Приглушённый текст */
+
+    --accent: 260 60% 40%;           /* Акцент (фиолетовый) */
+    --accent-foreground: 0 0% 100%;
+
+    --popover: 228 25% 17%;          /* Фон поповеров */
+    --popover-foreground: 0 0% 100%;
+
+    --border: 228 20% 30%;
+    --input: 228 20% 30%;
+
+    --card: 228 25% 17%;             /* Цвет карточек */
+    --card-foreground: 0 0% 100%;
+
+    --primary: 260 80% 60%;          /* Основной цвет (яркий фиолетовый) */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 200 60% 50%;        /* Дополнительный цвет (голубоватый) */
+    --secondary-foreground: 0 0% 100%;
+
+    --destructive: 0 80% 60%;        /* Красный для опасных действий */
+    --destructive-foreground: 0 0% 100%;
+
+    --ring: 260 70% 50%;             /* Цвет колец (outline) */
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}

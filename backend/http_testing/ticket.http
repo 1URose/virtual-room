@@ -1,0 +1,36 @@
+### POST request to create a new ticket
+POST http://localhost:8080/tickets/create
+Content-Type: application/json
+
+{
+  "event_name": "Concert2024",
+  "login": "organizer12314@example.com",
+  "ticket_type": 0,
+  "price": 200.00,
+  "purchase_date": "2024-12-01T15:00:00Z"
+}
+
+###
+### GET request to fetch a ticket by user login and event name
+GET http://localhost:8080/tickets/user123@example.com/Concert2024
+
+###
+### GET request to fetch all tickets
+GET http://localhost:8080/tickets/all
+
+###
+### DELETE request to delete a ticket
+DELETE http://localhost:8080/tickets/organizer12314@example.com/Concert2024
+
+###
+### PUT request to update a ticket
+PUT http://localhost:8080/tickets/user123/Concert2024
+Content-Type: application/json
+
+{
+  "ticket_type": "General Admission",
+  "price": 100.00,
+  "purchase_date": "2024-12-05T10:30:00Z"
+}
+
+###
